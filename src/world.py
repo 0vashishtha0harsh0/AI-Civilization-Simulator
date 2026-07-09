@@ -40,6 +40,27 @@ class World:
 
             self.grid.append(current_row)
 
+    def find_nearest_food(self, row, col):
+
+        nearest = None
+        min_distance = float("inf")
+
+        for r in range(len(self.grid)):
+            for c in range(len(self.grid[0])):
+
+                if self.grid[r][c] == 4:
+
+                    distance = abs(row - r) + abs(col - c)
+
+                    if distance < min_distance:
+                        min_distance = distance
+                        nearest = (r, c)
+
+        return nearest
+
+    def remove_food(self, row, col):
+        self.grid[row][col] = 0
+
     def draw(self, screen):
 
         for row in range(ROWS):

@@ -16,8 +16,8 @@ class Citizen:
 
         while True:
 
-            row = random.randint(0, len(world.grid) - 1)
-            col = random.randint(0, len(world.grid[0]) - 1)
+            row = random.randint(0, len(world.grid)-1)
+            col = random.randint(0, len(world.grid[0])-1)
 
             if world.grid[row][col] != 2:
                 break
@@ -31,40 +31,73 @@ class Citizen:
 
         self.move_timer += 1
 
-        if self.move_timer < 15:
+        if self.move_timer < 10:
             return
 
         self.move_timer = 0
 
-        directions = [
-            (-1, 0),
-            (1, 0),
-            (0, -1),
-            (0, 1)
-        ]
+        self.hunger -= 1
 
-        dr, dc = random.choice(directions)
+        if self.hunger <= 30:
 
-        new_row = self.row + dr
-        new_col = self.col + dc
+            target = self.world.find_nearest_food(
+                self.row,
+                self.col
+            )
 
-        rows = len(self.world.grid)
-        cols = len(self.world.grid[0])
+            if target:
 
-        if 0 <= new_row < rows and 0 <= new_col < cols:
+                tr, tc = target
 
-            if self.world.grid[new_row][new_col] != 2:
-                self.row = new_row
-                self.col = new_col
+                if self.row < tr:
+                    self.row += 1
 
-    def draw(self, screen):
+                elif self.row > tr:
+                    self.row -= 1
 
-        x = self.col * TILE_SIZE + TILE_SIZE // 2
-        y = self.row * TILE_SIZE + TILE_SIZE // 2
+                elif self.col < tc:
+                    self.col += 1
+
+                elif self.col > tc:
+                    self.col -= 1
+
+                if self.row == tr and self.col == tc:
+
+                    self.world.remove_food(tr, tc)
+
+                    self.hunger = 100
+
+        else:
+
+            directions = [
+                (-1,0),
+                (1,0),
+                (0,-1),
+                (0,1)
+            ]
+
+            dr,dc = random.choice(directions)
+
+            nr = self.row + dr
+            nc = self.col + dc
+
+            rows = len(self.world.grid)
+            cols = len(self.world.grid[0])
+
+            if 0<=nr<rows and 0<=nc<cols:
+
+                if self.world.grid[nr][nc] != 2:
+                    self.row = nr
+                    self.col = nc
+
+    def draw(self,screen):
+
+        x = self.col*TILE_SIZE + TILE_SIZE//2
+        y = self.row*TILE_SIZE + TILE_SIZE//2
 
         pygame.draw.circle(
             screen,
-            (255, 0, 0),
-            (x, y),
-            TILE_SIZE // 3
+            (255,0,0),
+            (x,y),
+            TILE_SIZE//3
         )
