@@ -2,9 +2,11 @@ import pygame
 
 from src.constants import SCREEN_WIDTH, SCREEN_HEIGHT, FPS
 from src.world import World
+from src.simulation import Simulation
 
 
 def main():
+
     pygame.init()
 
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -13,6 +15,7 @@ def main():
     clock = pygame.time.Clock()
 
     world = World()
+    simulation = Simulation(world)
 
     running = True
 
@@ -22,9 +25,12 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
+        simulation.update()
+
         screen.fill((0, 0, 0))
 
         world.draw(screen)
+        simulation.draw(screen)
 
         pygame.display.flip()
 
